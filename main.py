@@ -2,7 +2,7 @@ import argparse
 import sys
 import os
 import pandas as pd
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from joblib import dump, load
 from sklearn import metrics
 from sklearn.metrics import recall_score
@@ -25,15 +25,13 @@ def run_train(train_dir, dev_dir, model_dir):
     transformer = RobustScaler().fit(X_train)
     X_train = transformer.transform(X_train)
 
-    
-
     Y_train_slope = train_data['RoadSlope_100ms']
     Y_train_mass = train_data['Vehicle_Mass']
-
-    model_mass = LogisticRegression()
+    
+    model_mass = DecisionTreeClassifier()
     model_mass.fit(X_train, Y_train_mass)
 
-    model_slope = LinearRegression()
+    model_slope = DecisionTreeRegressor()
     model_slope.fit(X_train, Y_train_slope)
 
     # Lưu mô hình
@@ -62,8 +60,6 @@ def run_predict(model_dir, input_dir, output_path):
     test_data = pd.read_csv(input_file)
 
     scaler = load(scaler_path)
-
-    
 
     # Chuẩn bị dữ liệu kiểm tra
     X_test = scaler.transform(test_data)
